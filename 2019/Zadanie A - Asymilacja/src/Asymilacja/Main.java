@@ -10,7 +10,7 @@ public class Main {
 
         Loader loader = null;
         try {
-            loader = new Loader(new File("src/Asymilacja/data.txt"));
+            loader = new Loader(new File("2019/Zadanie A - Asymilacja/src/Asymilacja/data.txt"));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
