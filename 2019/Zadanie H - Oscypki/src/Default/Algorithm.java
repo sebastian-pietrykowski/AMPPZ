@@ -1,14 +1,13 @@
 package Default;
 
 import java.util.*;
-import java.util.function.IntPredicate;
-import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
 public class Algorithm {
 
     private int[] oscypkiDeliciousness;
     private int sumOfDeliciousnessForAlicja, sumOfDeliciousnessForBob = 0;
+    private Map<Integer, ArrayList<boolean[]>> possibleMovesAtLength = new TreeMap<>();
 
     public Algorithm(int[] oscypkiDeliciousness) {
         this.oscypkiDeliciousness = oscypkiDeliciousness;
@@ -16,19 +15,19 @@ public class Algorithm {
 
     public int findMaxSumOfDeliciousnessForAlicja() {
 
-        int indexOfMaxValueAtEvenPostion = IntStream.range(0, oscypkiDeliciousness.length).filter(i -> i%2 == 0).boxed().max(Comparator.comparing(i -> oscypkiDeliciousness[i])).get();
-        int indexOfMaxValueAtOddPostion = IntStream.range(0, oscypkiDeliciousness.length).filter(i -> i%2 == 1).boxed().max(Comparator.comparing(i -> oscypkiDeliciousness[i])).get();
+        int indexOfMaxValueAtEvenPosition = IntStream.range(0, oscypkiDeliciousness.length).filter(i -> i%2 == 0).boxed().max(Comparator.comparing(i -> oscypkiDeliciousness[i])).get();
+        int indexOfMaxValueAtOddPosition = IntStream.range(0, oscypkiDeliciousness.length).filter(i -> i%2 == 1).boxed().max(Comparator.comparing(i -> oscypkiDeliciousness[i])).get();
 
-        int maxSumForAlicjaStartingAtEvenPositon = findMaxSumStartingAt(indexOfMaxValueAtEvenPostion);
-        int maxSumForAlicjaStartingAtOddPositon = findMaxSumStartingAt(indexOfMaxValueAtOddPostion);
+        int maxSumForAlicjaStartingAtEvenPosition = findMaxSumStartingAt(indexOfMaxValueAtEvenPosition);
+        int maxSumForAlicjaStartingAtOddPosition = findMaxSumStartingAt(indexOfMaxValueAtOddPosition);
 
-        return Integer.max(maxSumForAlicjaStartingAtEvenPositon, maxSumForAlicjaStartingAtOddPositon);
+        return Integer.max(maxSumForAlicjaStartingAtEvenPosition, maxSumForAlicjaStartingAtOddPosition);
     }
 
     private int findMaxSumStartingAt(int startIndex) {
         boolean[] visitedOscypki = new boolean[oscypkiDeliciousness.length];
         visitedOscypki[startIndex] = true;
-        System.out.println(Arrays.toString(visitedOscypki));
+
         ArrayList<Hole> holes = findHoles(visitedOscypki, 0, oscypkiDeliciousness.length-1);
         for (Hole hole: holes)
             hole.print();
@@ -54,6 +53,8 @@ public class Algorithm {
                 numberOfCurrentHole++;
         return holes;
     }
+
+
 
     private class Hole {
         int startIndex = -1;
