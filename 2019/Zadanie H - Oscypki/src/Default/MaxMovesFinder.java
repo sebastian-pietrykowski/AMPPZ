@@ -32,22 +32,14 @@ public class MaxMovesFinder {
             // Bob's turn - 2nd
             ArrayList<Hole> holes = findHoles(whoTookWhichOscypkiTmp);
             for (Hole hole: holes) {
-                if (hole.startIndex == hole.endIndex) {
-                    whoTookWhichOscypkiTmp[hole.startIndex] = WhoTook.BOB;
-                }
-                else {
+                if (hole.startIndex != hole.endIndex) {
                     int startDeliciousness = oscypkiDeliciousness[hole.startIndex];
                     int endDeliciousness = oscypkiDeliciousness[hole.endIndex];
-                    int tookIndex, leftIndex;
-                    if (startDeliciousness > endDeliciousness) {
-                        tookIndex = hole.startIndex;
+                    int leftIndex;
+                    if (startDeliciousness > endDeliciousness)
                         leftIndex = hole.endIndex;
-                    }
-                    else {
-                        tookIndex = hole.endIndex;
+                    else
                         leftIndex = hole.startIndex;
-                    }
-                    whoTookWhichOscypkiTmp[tookIndex] = WhoTook.BOB;
                     // Alicja's turn - 3rd
                     whoTookWhichOscypkiTmp[leftIndex] = WhoTook.ALICJA;
                 }
@@ -72,7 +64,7 @@ public class MaxMovesFinder {
         ArrayList<Hole> holes = new ArrayList<>();
         int numberOfCurrentHole = 0;
         for (int index = 0; index < whoTookOscypki.length; index++)
-            if (whoTookOscypki[index] == 0) {
+            if (whoTookOscypki[index] == WhoTook.NOBODY) {
                 Hole currentHole;
                 if (numberOfCurrentHole == holes.size()) {
                     currentHole = new Hole(index);
@@ -90,7 +82,7 @@ public class MaxMovesFinder {
     private int getSumOfDeliciousnessForAlicja(byte[] whoTookWhichOscypki) {
         int sum = 0;
         for (int index = 0; index < oscypkiDeliciousness.length; index++)
-            if (whoTookWhichOscypki[index] == 1)
+            if (whoTookWhichOscypki[index] == WhoTook.ALICJA)
                 sum += oscypkiDeliciousness[index];
         return sum;
     }
