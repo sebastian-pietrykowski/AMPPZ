@@ -3,33 +3,37 @@ package Default;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Algorithm {
+public class MaxMovesFinder {
 
     private final int[] oscypkiDeliciousness;
+    private byte[] whoTookWhichOscypki;
+    private int maxSumOfDeliciousnessForAlicja = 0;
 
-    public Algorithm(int[] oscypkiDeliciousness) {
+    public MaxMovesFinder(int[] oscypkiDeliciousness) {
         this.oscypkiDeliciousness = oscypkiDeliciousness;
+        whoTookWhichOscypki = new byte[oscypkiDeliciousness.length]; // 0 - nobody, 1 - Alicja, 2 - Bob
+        Arrays.fill(whoTookWhichOscypki, WhoTook.NOBODY);
+
+        findMaxSumOfDeliciousnessForAlicja();
     }
 
-    public int findMaxSumOfDeliciousnessForAlicja() {
-        byte[] whoTookOscypkiFinal = new byte[oscypkiDeliciousness.length]; // 0 - nobody, 1 - Alicja, 2 - Bob
-        Arrays.fill(whoTookOscypkiFinal, (byte) 0);
-        int maxSumOfDeliciousnessForAlicja = 0;
+    private void findMaxSumOfDeliciousnessForAlicja() {
 
         // Alicja's turn - 1st
         ArrayList<ArrayList<Integer>> possibleMovesCombination = new MovesCombination().determinePossibleMoves(oscypkiDeliciousness.length);
         for (ArrayList<Integer> possibleMovesOption: possibleMovesCombination) {
-            byte[] whoTookOscypkiTmp = new byte[oscypkiDeliciousness.length];
-            Arrays.fill(whoTookOscypkiTmp, (byte) 0);
 
-            for (Integer tookOscypekIndex : possibleMovesOption)
-                whoTookOscypkiTmp[tookOscypekIndex] = 1;
+            byte[] whoTookWhichOscypkiTmp = new byte[oscypkiDeliciousness.length];
+            Arrays.fill(whoTookWhichOscypkiTmp, WhoTook.NOBODY);
+
+            for (Integer tookOscypekIndex: possibleMovesOption)
+                whoTookWhichOscypkiTmp[tookOscypekIndex] = WhoTook.ALICJA;
 
             // Bob's turn - 2nd
-            ArrayList<Hole> holes = findHoles(whoTookOscypkiTmp);
+            ArrayList<Hole> holes = findHoles(whoTookWhichOscypkiTmp);
             for (Hole hole: holes) {
                 if (hole.startIndex == hole.endIndex) {
-                    whoTookOscypkiTmp[hole.startIndex] = 2;
+                    whoTookWhichOscypkiTmp[hole.startIndex] = WhoTook.BOB;
                 }
                 else {
                     int startDeliciousness = oscypkiDeliciousness[hole.startIndex];
@@ -43,17 +47,24 @@ public class Algorithm {
                         tookIndex = hole.endIndex;
                         leftIndex = hole.startIndex;
                     }
-                    whoTookOscypkiTmp[tookIndex] = 2;
+                    whoTookWhichOscypkiTmp[tookIndex] = WhoTook.BOB;
                     // Alicja's turn - 3rd
-                    whoTookOscypkiTmp[leftIndex] = 1;
+                    whoTookWhichOscypkiTmp[leftIndex] = WhoTook.ALICJA;
                 }
             }
-            int sumOfDeliciousnessForAlicja = getSumOfDeliciousnessForAlicja(whoTookOscypkiTmp);
+            int sumOfDeliciousnessForAlicja = getSumOfDeliciousnessForAlicja(whoTookWhichOscypkiTmp);
             if (sumOfDeliciousnessForAlicja > maxSumOfDeliciousnessForAlicja) {
                 maxSumOfDeliciousnessForAlicja = sumOfDeliciousnessForAlicja;
-                whoTookOscypkiFinal = whoTookOscypkiTmp;
+                whoTookWhichOscypki = whoTookWhichOscypkiTmp;
             }
         }
+    }
+
+    public String getWhoTookWhichOscypki() {
+        return Arrays.toString(whoTookWhichOscypki);
+    }
+
+    public int getMaxSumOfDeliciousnessForAlicja() {
         return maxSumOfDeliciousnessForAlicja;
     }
 
@@ -76,20 +87,26 @@ public class Algorithm {
         return holes;
     }
 
-    private int getSumOfDeliciousnessForAlicja(byte[] whoTookOscypki) {
+    private int getSumOfDeliciousnessForAlicja(byte[] whoTookWhichOscypki) {
         int sum = 0;
         for (int index = 0; index < oscypkiDeliciousness.length; index++)
-            if (whoTookOscypki[index] == 1)
+            if (whoTookWhichOscypki[index] == 1)
                 sum += oscypkiDeliciousness[index];
         return sum;
     }
 
-    private class Hole {
+    private static class Hole {
         int startIndex;
         int endIndex;
 
         Hole(int startIndex) {
             this.startIndex = startIndex;
         }
+    }
+
+    private static class WhoTook {
+        final static byte NOBODY = 0;
+        final static byte ALICJA = 1;
+        final static byte BOB = 2;
     }
 }

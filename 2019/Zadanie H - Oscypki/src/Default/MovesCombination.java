@@ -3,13 +3,13 @@ package Default;
 import java.util.ArrayList;
 
 public class MovesCombination {
-    private ArrayList<ArrayList<Integer>> possibleMovesCombination = new ArrayList<>();
-
+    private final ArrayList<ArrayList<Integer>> possibleMovesCombination = new ArrayList<>();
 
     private void combinationUtil(ArrayList<Integer> data, int index, int value, int maxValue) {
         if (value == maxValue || value == maxValue-1) {
             data.add(index, value);
-            possibleMovesCombination.add((ArrayList<Integer>) data.clone());
+            ArrayList<Integer> dataClone = new ArrayList<>(data);
+            possibleMovesCombination.add(dataClone);
             data.remove(index);
             return;
         }

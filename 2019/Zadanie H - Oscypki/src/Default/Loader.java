@@ -13,7 +13,7 @@ public class Loader {
         for (int numberOfSet = 0; numberOfSet < numberOfSets ; numberOfSet++) {
             int numberOfOscypkiInSet = Integer.parseInt(reader.readLine());
             oscypkiSets[numberOfSet] = new int[numberOfOscypkiInSet];
-            oscypkiSets[numberOfSet] = Arrays.stream(reader.readLine().split("\\s+")).mapToInt(n -> Integer.parseInt(n)).toArray();
+            oscypkiSets[numberOfSet] = Arrays.stream(reader.readLine().split("\\s+")).mapToInt(Integer::parseInt).toArray();
         }
 
         reader.close();
